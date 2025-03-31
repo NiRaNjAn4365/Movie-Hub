@@ -23,10 +23,11 @@ class CategoeryPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResults> {
         val currentPage = params.key ?: 1
         return try{
-            val response=movieApi.getMovieByCateogery(genreId)
+            val response = movieApi.getMovieByCateogery(genreId, currentPage)
+            val movies = response.results ?: emptyList()
             val endOfPaginationReached = response.results.isEmpty()
             LoadResult.Page(
-                data = response.results,
+                data = movies,
                 prevKey = if (currentPage == 1) null else currentPage - 1,
                 nextKey = if (endOfPaginationReached) null else currentPage + 1
             )
